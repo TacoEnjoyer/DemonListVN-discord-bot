@@ -72,6 +72,15 @@ export async function execute(interaction: ChatInputCommandInteraction) {
 		const playerLink = `https://www.demonlistvn.com/player/${player.uid}`;
 		const levelLink = `https://www.demonlistvn.com/level/${level.id}`;
 
+		const formatTime = (ms: number) => {
+			const minutes = Math.floor(ms / 60000);
+			const seconds = Math.floor((ms % 60000) / 1000);
+			const milliseconds = ms % 1000;
+			return `${minutes}:${seconds.toString().padStart(2, '0')}.${milliseconds
+				.toString()
+				.padStart(3, '0')}`;
+		};
+
 		const embed = new EmbedBuilder()
 			.setColor('#0099ff')
 			.setTitle(`Bản ghi mới nhất của ${player.name}`)
@@ -92,14 +101,19 @@ export async function execute(interaction: ChatInputCommandInteraction) {
 					value: mostRecent.plPt !== null ? `${mostRecent.plPt}` : 'N/A',
 					inline: true
 				},
-				{ name: 'Tiến độ', value: `${mostRecent.progress}%`, inline: true },
+				{
+					name: level.isPlatformer ? 'Thời gian' : 'Tiến độ',
+					value: level.isPlatformer ? formatTime(mostRecent.progress) : `${mostRecent.progress}%`,
+					inline: true
+				},
 				{ name: 'FPS', value: `${mostRecent.refreshRate}`, inline: true },
 				{ name: 'Thiết bị', value: mostRecent.mobile ? 'Mobile' : 'PC', inline: true },
 				{ name: 'Liên kết Video', value: `[Bấm vào đây](${mostRecent.videoLink})`, inline: false },
 				{ name: 'Nộp lúc', value: date.toLocaleString(), inline: false },
 				{ name: 'Level', value: `[${level.name}](${levelLink})`, inline: true },
 				{ name: 'Người chơi', value: `[${player.name}](${playerLink})`, inline: true }
-			);
+			)
+			.setThumbnail(`https://img.youtube.com/vi/${level.videoID}/0.jpg`);
 
 		if (mostRecent.comment) {
 			embed.addFields({ name: 'Bình luận', value: mostRecent.comment, inline: false });
