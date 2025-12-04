@@ -60,8 +60,6 @@ export async function execute(interaction: ChatInputCommandInteraction) {
 			{ name: 'EXP', value: `${player.exp}`, inline: true },
 			{ name: 'Hội', value: player.clans?.tag ? `[${player.clans.tag}](${clanLink})` : 'N/a', inline: true }
 			)
-			.setTimestamp()
-			.setFooter({ text: 'Demon List VN' });
 
 		if (isActive(player.supporterUntil)) {
 			embed.setImage(bannerUrl);
