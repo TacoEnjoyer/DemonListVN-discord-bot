@@ -1,4 +1,4 @@
-import { Client, GatewayIntentBits, Collection, Events } from 'discord.js';
+import { Client, GatewayIntentBits, Collection, Events, ActivityType } from 'discord.js';
 import { loadCommands, Command } from './utils/command-loader.js';
 
 const client = new Client({
@@ -9,6 +9,16 @@ client.commands = new Collection();
 
 client.on(Events.ClientReady, async () => {
 	console.log(`✅ Logged in as ${client.user?.tag}`);
+
+	client.user?.setPresence({
+		activities: [
+			{
+				name: 'Geometry Dash | /help',
+				type: ActivityType.Playing
+			}
+		],
+		status: 'online'
+	});
 
 	client.commands = await loadCommands();
 });
