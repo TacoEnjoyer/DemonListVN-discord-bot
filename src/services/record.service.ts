@@ -44,7 +44,7 @@ interface RecordsResponse {
 	pl: Record[];
 }
 
-export async function getPlayerRecords(uid: string): Promise<Record[]> {
+export async function getPlayerRecords(uid: string): Promise<RecordsResponse> {
 	try {
 		const response = await fetch(`${process.env.API_URL}/players/${uid}/records`);
 
@@ -54,12 +54,7 @@ export async function getPlayerRecords(uid: string): Promise<Record[]> {
 
 		const records = (await response.json()) as RecordsResponse;
 
-		// Combine all records and filter for accepted ones, then sort by timestamp descending
-		const allRecords = [...records.dl, ...records.fl, ...records.pl];
-		const acceptedRecords = allRecords.filter((record) => record.levels.accepted);
-		acceptedRecords.sort((a, b) => b.timestamp - a.timestamp);
-
-		return acceptedRecords;
+		return records;
 	} catch (error) {
 		console.error('Record fetch error:', error);
 		throw error;
@@ -68,4 +63,19 @@ export async function getPlayerRecords(uid: string): Promise<Record[]> {
 
 export function getMostRecentRecord(records: Record[]): Record | null {
 	return records.length > 0 ? records[0] : null;
+}
+
+export function filterRecordsByType(records: Record[], type: 'dl' | 'fl' | 'pl'): Record[] {
+	console.log(records);
+	return records.filter((record) => {
+		if (type === 'dl') {
+			return record.levels.dlTop !== null;
+		} else if (type === 'fl') {
+			return record.levels.flTop !== null;
+		} else if (type === 'pl') {
+			return record.levels.isPlatformer;
+		}
+
+		return true;
+	});
 }

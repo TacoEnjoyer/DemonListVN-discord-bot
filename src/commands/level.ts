@@ -45,6 +45,6 @@ export async function execute(interaction: ChatInputCommandInteraction) {
 		await interaction.editReply({ embeds: [embed] });
 	} catch (error) {
 		console.error('Level command error:', error);
-		await interaction.editReply('An error occurred while searching for the level.');
+		await interaction.editReply('Có lỗi xảy ra');
 	}
 }

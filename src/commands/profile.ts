@@ -3,14 +3,11 @@ import { getPlayer } from '../services/player.service';
 import { isActive } from '../utils/isActive';
 
 export const data = new SlashCommandBuilder()
-    .setName('profile')
-    .setDescription("Lấy hồ sơ của người dùng")
-    .addUserOption(option =>
-        option
-            .setName('user')
-            .setDescription('Người dùng muốn xem hồ sơ')
-            .setRequired(false)
-    );
+	.setName('profile')
+	.setDescription('Lấy hồ sơ của người dùng')
+	.addUserOption((option) =>
+		option.setName('user').setDescription('Người dùng muốn xem hồ sơ').setRequired(false)
+	);
 
 export async function execute(interaction: ChatInputCommandInteraction) {
 	const targetUser = interaction.options.getUser('user') ?? interaction.user;
@@ -20,13 +17,15 @@ export async function execute(interaction: ChatInputCommandInteraction) {
 		const player = await getPlayer(discordId);
 
 		if (!player) {
-			await interaction.reply(`Không tìm thấy tài khoản liên kết với tài khoản Discord ${targetUser.username}`);
+			await interaction.reply(`Không tìm thấy tài khoản liên kết với ${targetUser.username}`);
 			return;
 		}
 
 		const playerLink = `https://www.demonlistvn.com/player/${player.uid}`;
 		const clanLink = `https://www.demonlistvn.com/clan/${player.clan ? player.clan : 0}`;
-		const borderColor = player.borderColor ? parseInt(player.borderColor.replace('#', ''), 16) : null;
+		const borderColor = player.borderColor
+			? parseInt(player.borderColor.replace('#', ''), 16)
+			: null;
 		const avatarUrl = `https://cdn.demonlistvn.com/avatars/${player.uid}.${
 			isActive(player.supporterUntil) && player.isAvatarGif ? 'gif' : 'jpg'
 		}?version=${player.avatarVersion}`;
@@ -56,10 +55,14 @@ export async function execute(interaction: ChatInputCommandInteraction) {
 					value: `${player.totalFLpt ?? 0} #${player.flrank ?? 'N/A'}`,
 					inline: true
 				},
-			{ name: 'Số bản ghi', value: `${player.recordCount}`, inline: true },
-			{ name: 'EXP', value: `${player.exp}`, inline: true },
-			{ name: 'Hội', value: player.clans?.tag ? `[${player.clans.tag}](${clanLink})` : 'N/a', inline: true }
-			)
+				{ name: 'Số bản ghi', value: `${player.recordCount}`, inline: true },
+				{ name: 'EXP', value: `${player.exp}`, inline: true },
+				{
+					name: 'Hội',
+					value: player.clans?.tag ? `[${player.clans.tag}](${clanLink})` : 'N/a',
+					inline: true
+				}
+			);
 
 		if (isActive(player.supporterUntil)) {
 			embed.setImage(bannerUrl);
@@ -68,6 +71,6 @@ export async function execute(interaction: ChatInputCommandInteraction) {
 		await interaction.reply({ embeds: [embed] });
 	} catch (error) {
 		console.error('Error fetching player profile:', error);
-		await interaction.reply('Failed to fetch profile. Please try again later.');
+		await interaction.reply('Cõ lỗi xảy ra');
 	}
 }
