@@ -27,7 +27,6 @@ const rest = new REST().setToken(process.env.DISCORD_TOKEN!);
 (async () => {
 	try {
 		const isGuildDeploy = !!process.env.TEST_GUILD_ID;
-		
 		const route = process.env.TEST_GUILD_ID
 			? Routes.applicationGuildCommands(process.env.CLIENT_ID!, process.env.TEST_GUILD_ID)
 			: Routes.applicationCommands(process.env.CLIENT_ID!);
@@ -39,9 +38,8 @@ const rest = new REST().setToken(process.env.DISCORD_TOKEN!);
 		);
 		
 		await rest.put(route, { body: [] });
-		console.log('Successfully cleared existing commands.');
 
-		// Deploy new commands
+		console.log('Successfully cleared existing commands.');
 		console.log(
 			`Started refreshing ${commands.length} application (/) commands ${
 				isGuildDeploy ? `to guild ${process.env.TEST_GUILD_ID}` : 'globally'
