@@ -5,7 +5,7 @@ export const data = new SlashCommandBuilder()
 	.setName('help')
 	.setDescription('Hiển thị danh sách các lệnh có sẵn');
 
-const SUPPORTER_COMMANDS = ['list'];
+const SUPPORTER_COMMANDS = ['list', 'leaderboard'];
 
 export async function execute(interaction: ChatInputCommandInteraction) {
 	const client = interaction.client as Client & { commands: Collection<string, Command> };

@@ -1,4 +1,4 @@
-interface Player {
+export interface Player {
 	id: number;
 	name: string;
 	email: string;
@@ -41,7 +41,10 @@ interface Player {
 	matchCount: number;
 	pointercrate: string;
 	overviewData: any;
-	clans: any;
+	clans: {
+		tag: string;
+		name: string;
+	};
 }
 
 interface SearchResponse {
@@ -63,4 +66,14 @@ export async function getPlayer(discordId: string): Promise<Player | null> {
 	}
 
 	return data.players[0];
+}
+
+export async function fetchLeaderboard(listType: string): Promise<Player[]> {
+	const response = await fetch(`https://api.demonlistvn.com/leaderboard/${listType}`);
+	
+	if (!response.ok) {
+		throw new Error('Failed to fetch leaderboard data');
+	}
+
+	return (await response.json()) as Player[];
 }
