@@ -8,6 +8,7 @@ import {
 	ComponentType
 } from 'discord.js';
 import { fetchList, Level } from '../services/level.service';
+import { checkSupporter } from '../utils/checkSupporter';
 
 const LEVELS_PER_PAGE = 5;
 
@@ -85,6 +86,7 @@ export async function execute(interaction: ChatInputCommandInteraction) {
 
 	try {
 		await interaction.deferReply();
+		await checkSupporter(interaction.user.id);
 
 		let levels = await fetchList(
 			listType,
@@ -159,6 +161,7 @@ export async function execute(interaction: ChatInputCommandInteraction) {
 		});
 	} catch (error) {
 		console.error('List command error:', error);
-		await interaction.editReply('Có lỗi xảy ra khi lấy danh sách');
+		const errorMessage = error instanceof Error ? error.message : 'Có lỗi xảy ra khi lấy danh sách';
+		await interaction.editReply(errorMessage);
 	}
 }
