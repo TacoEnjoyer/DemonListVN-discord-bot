@@ -70,7 +70,7 @@ function createEmbed(
 		
 		embed.addFields({
 			name: `#${rank} - ${clanTag} ${player.name}`,
-			value: `Points: ${points ?? 'N/A'} | Records: ${player.recordCount}\n[View Profile](https://www.demonlistvn.com/player/${player.id})`,
+			value: `Points: ${points ?? 'N/A'}\n[Xem hồ sơ](https://www.demonlistvn.com/player/${player.id})`,
 			inline: false
 		});
 	});
