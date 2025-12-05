@@ -34,7 +34,7 @@ export async function loadCommands() {
 		}
 	}
 
-	console.log(`Loaded ${commands.size} commands`);
+	console.log(`Loaded ${commands.size} application (/) commands`);
 
 	return commands;
 }

@@ -45,12 +45,7 @@ export async function execute(interaction: ChatInputCommandInteraction) {
 			return;
 		}
 
-		const sortedRecords = [...filteredRecords].sort((a, b) => {
-			const aValue = listType === 'fl' ? a.flPt ?? 0 : a.levels.rating ?? 0;
-			const bValue = listType === 'fl' ? b.flPt ?? 0 : b.levels.rating ?? 0;
-			return bValue - aValue;
-		});
-		const bestRecord = sortedRecords[0];
+		const bestRecord = filteredRecords[0];
 		const formatTime = (ms: number) => {
 			const minutes = Math.floor(ms / 60000);
 			const seconds = Math.floor((ms % 60000) / 1000);

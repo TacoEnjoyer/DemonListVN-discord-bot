@@ -1,6 +1,6 @@
 {
     "name": "demonlistvn-discord-bot",
-    "version": "1.0.1",
+    "version": "1.0.2",
     "description": "Discord bot for Demon List VN",
     "main": "src/index.ts",
     "type": "module",
