@@ -39,22 +39,17 @@ export interface Submission {
 }
 
 export async function getPlayerSubmissions(uid: string): Promise<Submission[]> {
-	try {
-		const response = await fetch(`${process.env.API_URL}/players/${uid}/submissions`);
+	const response = await fetch(`${process.env.API_URL}/players/${uid}/submissions`);
 
-		if (!response.ok) {
-			throw new Error(`Failed to fetch submissions: ${response.statusText}`);
-		}
-
-		const submissions = (await response.json()) as Submission[];
-
-		return submissions;
-	} catch (error) {
-		console.error('Submission fetch error:', error);
-		throw error;
+	if (!response.ok) {
+		throw new Error(`Failed to fetch submissions: ${response.statusText}`);
 	}
+
+	const submissions = (await response.json()) as Submission[];
+
+	return submissions;
 }
 
 export function getMostRecentSubmission(submissions: Submission[]): Submission | null {
-	return submissions.length > 0 ? submissions[0] : null;
+	return submissions[0] ?? null;
 }

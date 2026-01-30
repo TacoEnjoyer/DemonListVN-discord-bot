@@ -1,6 +1,8 @@
 import { ChatInputCommandInteraction, SlashCommandBuilder, EmbedBuilder } from 'discord.js';
 import { getPlayer } from '../services/player.service';
-import { getPlayerSubmissions, getMostRecentSubmission } from '../services/submission.service';
+import { getPlayerSubmissions } from '../services/submission.service';
+import { formatTime } from '../utils/formatTime';
+import { isActive } from '../utils/isActive';
 
 export const data = new SlashCommandBuilder()
 	.setName('submission')
@@ -13,7 +15,7 @@ export async function execute(interaction: ChatInputCommandInteraction) {
 	try {
 		await interaction.deferReply();
 
-		const targetUser = interaction.options.getUser('user') ?? interaction.user;
+		const targetUser = interaction.user;
 		const player = await getPlayer(targetUser.id);
 
 		if (!player) {
@@ -24,15 +26,7 @@ export async function execute(interaction: ChatInputCommandInteraction) {
 		}
 
 		const submissions = await getPlayerSubmissions(player.uid);
-
-		if (submissions.length === 0) {
-			await interaction.editReply({
-				content: `${targetUser.username} không có bản ghi được gửi`
-			});
-			return;
-		}
-
-		const mostRecent = getMostRecentSubmission(submissions);
+		const mostRecent = submissions[0] ?? null;
 
 		if (!mostRecent) {
 			await interaction.editReply({
@@ -46,14 +40,10 @@ export async function execute(interaction: ChatInputCommandInteraction) {
 		const playerLink = `https://www.demonlistvn.com/player/${player.uid}`;
 		const levelLink = `https://www.demonlistvn.com/level/${level.id}`;
 
-		const formatTime = (ms: number) => {
-			const minutes = Math.floor(ms / 60000);
-			const seconds = Math.floor((ms % 60000) / 1000);
-			const milliseconds = ms % 1000;
-			return `${minutes}:${seconds.toString().padStart(2, '0')}.${milliseconds
-				.toString()
-				.padStart(3, '0')}`;
-		};
+		const isSupporter = isActive(player.supporterUntil);
+		const queueValue = isSupporter && mostRecent.queueNo
+			? `${mostRecent.queueNo}`
+			: `[---](https://www.demonlistvn.com/supporter)`;
 
 		const embed = new EmbedBuilder()
 			.setColor('#0099ff')
@@ -90,21 +80,18 @@ export async function execute(interaction: ChatInputCommandInteraction) {
 					name: 'Mobile',
 					value: mostRecent.mobile ? 'Có' : 'Không',
 					inline: true
+				},
+				{
+					name: 'Hàng đợi',
+					value: queueValue,
+					inline: true
 				}
 			);
 
 		if (mostRecent.videoLink) {
 			embed.addFields({
 				name: 'Video',
-				value: `[Xem](${mostRecent.videoLink})`,
-				inline: false
-			});
-		}
-
-		if (mostRecent.comment) {
-			embed.addFields({
-				name: 'Bình luận',
-				value: mostRecent.comment.substring(0, 1024),
+				value: `[Youtube](${mostRecent.videoLink})`,
 				inline: false
 			});
 		}
